@@ -170,6 +170,54 @@ class cnn_layer_visualization():
 
         cv2.destroyAllWindows()
 
+    def get_all_layers_live(self):
+        cv2.namedWindow("Input")
+        for i in range(len(self.modulelist[1:])):
+            cv2.namedWindow("Layer number {}".format(i))
+
+        cap = cv2.VideoCapture(0)
+        count = 0
+        start_time = time.time()
+
+
+        while cap.isOpened():
+            rval, frame = cap.read()
+            frame_PIL = Image.fromarray(np.uint8(frame*255))
+            prep_img = self.normalize(frame_PIL)
+
+            image = prep_img
+
+            outputs = []
+            names = []
+            for layer in self.modulelist[1:]:
+                image = layer(image)
+                outputs.append(image)
+                names.append(str(layer))
+
+            output_im = []
+            for i in outputs:
+                i = i.squeeze(0)
+                temp = self.grayscale(i)
+                output_im.append(temp.data.cpu().numpy())
+
+
+
+            cv2.imshow("Input", frame)
+            for i in range(len(output_im)):
+                cv2.imshow("Layer number {}".format(i), output_im[i])
+
+            count += 1
+
+            if count == 10:
+                print("Frame per sec:{}".format(10 / (time.time() - start_time)))
+                count = 0
+                start_time = time.time()
+
+            if cv2.waitKey(1) & 0xFF == ord('q'):
+                break
+
+        cv2.destroyAllWindows()
+
 
 def load_image( path):
     image = Image.open(path)
@@ -178,9 +226,9 @@ def load_image( path):
 
 
 
-# kitten_1 = load_image("../images/index.png")
-#
-# model = models.vgg16(pretrained=True)
-#
-# CLV = cnn_layer_visualization(model,output_path="",imagenet_class_index_file_path="../labels/imagenet_class_index.json")
-# CLV.get_one_layer_live(layer_num=1)
+kitten_1 = load_image("../images/index.png")
+
+model = models.vgg16(pretrained=True)
+
+CLV = cnn_layer_visualization(model,output_path="",imagenet_class_index_file_path="../labels/imagenet_class_index.json")
+CLV.get_all_layers_live()
