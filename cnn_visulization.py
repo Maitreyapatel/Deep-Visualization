@@ -121,7 +121,7 @@ class cnn_layer_visualization():
     def get_one_layer(self,image,layer_num=0):
         image = self.normalize(image)
 
-        self.one_layer_output(image,layer_num)
+        self.one_layer_output(image, layer_num)
 
     def get_one_layer_live(self,layer_num=0):
         cv2.namedWindow("Input")
@@ -218,6 +218,136 @@ class cnn_layer_visualization():
 
         cv2.destroyAllWindows()
 
+    def filter_outputs(self,image, layer_to_visualize):
+        if layer_to_visualize < 0:
+            layer_to_visualize += 31
+        output = None
+        name = None
+        for count, layer in enumerate(self.modulelist[1:]):
+            image = layer(image)
+            if count == layer_to_visualize:
+                output = image
+                name = str(layer)
+
+        filters = []
+        output = output.data.squeeze()
+        for i in range(output.shape[0]):
+            filters.append(output[i, :, :])
+
+        fig = plt.figure()
+        plt.rcParams["figure.figsize"] = (10, 10)
+
+        for i in range(int(np.sqrt(len(filters))) * int(np.sqrt(len(filters)))):
+            fig.add_subplot(np.sqrt(len(filters)), np.sqrt(len(filters)), i + 1)
+            imgplot = plt.imshow(filters[i])
+            plt.axis('off')
+
+        plt.savefig(join(self.output_path, 'filter_outputs.jpg'), bbox_inches='tight')
+        print("File saved at {} with file name {}.".format(self.output_path, "filter_outputs.jpg"))
+
+    def get_all_filters_of_one_layer(self,image,layer_num):
+        image = self.normalize(image)
+
+        self.filter_outputs(image, layer_num)
+
+    def get_all_filters_live(self,layer_to_visualize):
+        cv2.namedWindow("Input")
+        for i in range(len(self.modulelist[1:])):
+            cv2.namedWindow("filter number {}".format(i))
+
+        cap = cv2.VideoCapture(0)
+        count = 0
+        start_time = time.time()
+
+
+        while cap.isOpened():
+            rval, frame = cap.read()
+            frame_PIL = Image.fromarray(np.uint8(frame*255))
+            prep_img = self.normalize(frame_PIL)
+
+            image = prep_img
+
+            if layer_to_visualize < 0:
+                layer_to_visualize += 31
+            output = None
+            name = None
+            for count, layer in enumerate(self.modulelist[1:]):
+                image = layer(image)
+                if count == layer_to_visualize:
+                    output = image
+                    name = str(layer)
+
+            filters = []
+            output = output.data.squeeze().numpy()
+            for i in range(output.shape[0]):
+                filters.append(output[i, :, :])
+
+
+
+            cv2.imshow("Input", frame)
+            for i in range(len(filters)):
+                cv2.imshow("filter number {}".format(i), filters[i])
+
+            count += 1
+
+            if count == 10:
+                print("Frame per sec:{}".format(10 / (time.time() - start_time)))
+                count = 0
+                start_time = time.time()
+
+            if cv2.waitKey(1) & 0xFF == ord('q'):
+                break
+
+        cv2.destroyAllWindows()
+
+    def get_one_filter_live(self,layer_to_visualize,filter_num):
+        cv2.namedWindow("Input")
+        cv2.namedWindow("filter number {}".format(filter_num))
+
+        cap = cv2.VideoCapture(0)
+        count = 0
+        start_time = time.time()
+
+
+        while cap.isOpened():
+            rval, frame = cap.read()
+            frame_PIL = Image.fromarray(np.uint8(frame*255))
+            prep_img = self.normalize(frame_PIL)
+
+            image = prep_img
+
+            if layer_to_visualize < 0:
+                layer_to_visualize += 31
+            output = None
+            name = None
+            for count, layer in enumerate(self.modulelist[1:]):
+                image = layer(image)
+                if count == layer_to_visualize:
+                    output = image
+                    name = str(layer)
+
+            filters = []
+            output = output.data.squeeze().numpy()
+
+            filters.append(output[filter_num, :, :])
+
+
+
+            cv2.imshow("Input", frame)
+            cv2.imshow("filter number {}".format(filter_num), filters[0])
+
+            count += 1
+
+            if count == 10:
+                print("Frame per sec:{}".format(10 / (time.time() - start_time)))
+                count = 0
+                start_time = time.time()
+
+            if cv2.waitKey(1) & 0xFF == ord('q'):
+                break
+
+        cv2.destroyAllWindows()
+
 
 def load_image( path):
     image = Image.open(path)
@@ -226,9 +356,9 @@ def load_image( path):
 
 
 
-kitten_1 = load_image("../images/index.png")
-
-model = models.vgg16(pretrained=True)
-
-CLV = cnn_layer_visualization(model,output_path="",imagenet_class_index_file_path="../labels/imagenet_class_index.json")
-CLV.get_all_layers_live()
+# kitten_1 = load_image("../images/index.png")
+#
+# model = models.vgg16(pretrained=True)
+#
+# CLV = cnn_layer_visualization(model,output_path="",imagenet_class_index_file_path="../labels/imagenet_class_index.json")
+# CLV.get_one_filter_live(0,0)
