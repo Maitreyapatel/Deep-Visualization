@@ -16,6 +16,6 @@ Deep Visualization tool kit and module for researchers. Only Pytorch supportable
 - [ ] Convolutional Neural Network Filter Visualization
 - [ ] Inverted Image Representations
 - [ ] Deep Dream
-- [ ] Class Specific Image Generation
+- [x] Class Specific Image Generation
 - [ ] Various CNN layers visualization
 - [ ] Visualizing each filter separately of given layer
