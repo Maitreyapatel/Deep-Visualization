@@ -348,6 +348,29 @@ class cnn_layer_visualization():
 
         cv2.destroyAllWindows()
 
+    def visualize_weights(self, layer):
+        weight_used = []
+        for w in self.model.features.children():
+            if isinstance(w, torch.nn.modules.conv.Conv2d):
+                weight_used.append(w.weight.data)
+
+        filters = []
+        for i in range(weight_used[layer].shape[0]):
+            filters.append(weight_used[layer][i, :, :, :].sum(dim=0))
+            filters[i].div(weight_used[layer].shape[1])
+
+        fig = plt.figure()
+        plt.rcParams["figure.figsize"] = (10, 10)
+        for i in range(int(np.sqrt(weight_used[layer].shape[0])) * int(np.sqrt(weight_used[layer].shape[0]))):
+            a = fig.add_subplot(np.sqrt(weight_used[layer].shape[0]), np.sqrt(weight_used[layer].shape[0]), i + 1)
+            imgplot = plt.imshow(filters[i])
+            plt.axis('off')
+
+        plt.savefig(join(self.output_path, 'weights.jpg'), bbox_inches='tight')
+        print("File saved at {} with file name {}.".format(self.output_path, "weights.jpg"))
+
+    
+
 
 def load_image( path):
     image = Image.open(path)
@@ -356,9 +379,9 @@ def load_image( path):
 
 
 
-# kitten_1 = load_image("../images/index.png")
-#
-# model = models.vgg16(pretrained=True)
-#
-# CLV = cnn_layer_visualization(model,output_path="",imagenet_class_index_file_path="../labels/imagenet_class_index.json")
-# CLV.get_one_filter_live(0,0)
+kitten_1 = load_image("../images/index.png")
+
+model = models.vgg16(pretrained=True)
+
+CLV = cnn_layer_visualization(model,output_path="",imagenet_class_index_file_path="../labels/imagenet_class_index.json")
+CLV.visualize_weights(0)
