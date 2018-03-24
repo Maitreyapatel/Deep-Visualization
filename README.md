@@ -8,6 +8,7 @@ Deep Visualization tool kit and module for researchers. Only Pytorch supportable
 - [x] Guided Back propagation Saliency
 - [x] Guided Back propagation Negative Saliency
 - [x] Guided Back propagation Positive Saliency
+- [ ] Smooth grad Saliency
 - [ ] Gradient-weighted Class Activation Map
 - [ ] Gradient-weighted Class Activation Heat map
 - [ ] Gradient-weighted Class Activation Heat map on Image
