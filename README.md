@@ -8,14 +8,14 @@ Deep Visualization tool kit and module for researchers. Only Pytorch supportable
 - [x] Guided Back propagation Saliency
 - [x] Guided Back propagation Negative Saliency
 - [x] Guided Back propagation Positive Saliency
-- [ ] Smooth grad Saliency
-- [ ] Gradient-weighted Class Activation Map
-- [ ] Gradient-weighted Class Activation Heat map
-- [ ] Gradient-weighted Class Activation Heat map on Image
-- [ ] Colored Guided Gradient-weighted Class Activation Map
-- [ ] Guided Gradient-weighted Class Activation Map Saliency
-- [ ] Convolutional Neural Network Filter Visualization
-- [ ] Inverted Image Representations
+- [ ] Smooth grad Saliency(Will be done by today)
+- [ ] Gradient-weighted Class Activation Map(After reading 2 reacher papers and this will be last to be done)
+- [ ] Gradient-weighted Class Activation Heat map(After reading 2 reacher papers and this will be last to be done)
+- [ ] Gradient-weighted Class Activation Heat map on Image(After reading 2 reacher papers and this will be last to be done)
+- [ ] Colored Guided Gradient-weighted Class Activation Map(After reading 2 reacher papers and this will be last to be done)
+- [ ] Guided Gradient-weighted Class Activation Map Saliency(After reading 2 reacher papers and this will be last to be done)
+- [ ] Convolutional Neural Network Filter Visualization (Getting an error)
+- [ ] Inverted Image Representations(Today)
 - [ ] Deep Dream
 - [x] Class Specific Image Generation
 - [x] Various CNN layers' activations visualization
