@@ -64,9 +64,9 @@ class ClassSpecificImageGeneration():
         if not os.path.exists(self.path):
             os.makedirs(self.path)
 
-    def generate(self):
-        initial_learning_rate = 6
-        for i in range(1, 150):
+    def generate(self,initial_learning_rate,itr):
+        # initial_learning_rate = 6
+        for i in range(1, itr):
 
             self.processed_image = preprocess_image(self.created_image)
 
@@ -89,6 +89,6 @@ class ClassSpecificImageGeneration():
         return self.processed_image
 
 
-# pretrained_model = models.alexnet(pretrained=True)
-# csig = ClassSpecificImageGeneration(pretrained_model, target_class=130,path="../generated/")
-# csig.generate()
+pretrained_model = models.alexnet(pretrained=True)
+csig = ClassSpecificImageGeneration(pretrained_model, target_class=52,path="../generated/")
+csig.generate(6,150)
