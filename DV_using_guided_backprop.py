@@ -3,8 +3,6 @@ import pandas as pd
 from os import listdir, makedirs, getcwd, remove
 from os.path import isfile, join, abspath, exists, isdir, expanduser
 from PIL import Image
-import pickle
-import nltk
 import cv2 , os, time
 
 import torch
@@ -119,9 +117,10 @@ class GuidedBackprop():
 
 class Visualize_Guided_Backpropagation():
 
-    def __init__(self,model,target_class):
+    def __init__(self,model,target_class,output_path=""):
         self.model = model
         self.target_class = target_class
+        self.output_path = output_path
         self.GBP = GuidedBackprop(model, target_class)
 
     def Colored_Guided_Backpropagation(self,image):
@@ -131,6 +130,13 @@ class Visualize_Guided_Backpropagation():
         output = self.convert_image(guided_grads)
 
         return output
+
+    def get_Colored_Guided_Backpropagation(self,image):
+
+        out = self.Colored_Guided_Backpropagation(image)
+
+        cv2.imwrite(join(self.output_path,"CGB.jpg"),out)
+        print("Image saved at location {} with name CGB.jpg".format(self.output_path))
 
     def Colored_Guided_Backpropagation_Live(self):
         cv2.namedWindow("Input")
@@ -179,6 +185,14 @@ class Visualize_Guided_Backpropagation():
 
         return output
 
+    def get_Guided_Backpropagation_Saliency(self,image):
+
+        out = self.Guided_Backpropagation_Saliency(image)
+
+        cv2.imwrite(join(self.output_path,"GBS.jpg"),out)
+        print("Image saved at location {} with name GBS.jpg".format(self.output_path))
+
+
 
     def Guided_Backpropagation_Saliency_Live(self):
         cv2.namedWindow("Input")
@@ -219,6 +233,14 @@ class Visualize_Guided_Backpropagation():
         pos_image, neg_image = self.convert_image(pos_sal), self.convert_image(neg_sal)
 
         return pos_image, neg_image
+
+    def get_Guided_Backpropagation_Saliency(self,image):
+
+        out1,out2 = self.Guided_Backpropagation_Saliency(image)
+
+        cv2.imwrite(join(self.output_path,"GBSP.jpg"),out1)
+        cv2.imwrite(join(self.output_path,"GBSN.jpg"),out2)
+        print("Image saved at location {} with names GBSP.jpg and GBSN.jpg".format(self.output_path))
 
 
 
@@ -265,6 +287,7 @@ class Visualize_Guided_Backpropagation():
 
 # pretrained_model = models.alexnet(pretrained=True)
 #
-# VGP = Visualize_Guided_Backpropagation(pretrained_model,target_class=0)
+# VGP = Visualize_Guided_Backpropagation(pretrained_model,target_class=243)
+# original_image = cv2.imread("../images/dog.jpg", 1)
 #
-# VGP.Guided_Backpropagation_Positive_Negative_Saliency_Live()
+# VGP.get_Colored_Guided_Backpropagation(original_image)
